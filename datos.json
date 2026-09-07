@@ -21,5 +21,19 @@
     "correo": "ana877@gmail.com",
     "imagen": "url",
     "clave": "4567"
+  },
+  {
+    "nombre": "Mariana",
+    "edad": "16",
+    "correo": "mariana98@gmail.com",
+    "clave": "8529",
+    "imagen": "/misimagenes/imagen"
+  },
+  {
+    "nombre": "Leidy",
+    "edad": "17",
+    "correo": "leidy1902@gmail.com",
+    "clave": "1478",
+    "imagen": "/misimagenes/imagen"
   }
 ]
