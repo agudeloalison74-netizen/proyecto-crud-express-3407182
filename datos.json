@@ -35,5 +35,12 @@
     "correo": "leidy1902@gmail.com",
     "clave": "1478",
     "imagen": "/misimagenes/imagen"
+  },
+  {
+    "nombre": "Carlos",
+    "edad": 25,
+    "correo": "carlos@gmail.com",
+    "imagen": "sin_imagen",
+    "clave": "123458"
   }
 ]

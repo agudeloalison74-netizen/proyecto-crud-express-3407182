@@ -12,6 +12,9 @@ const rutaMiArchivo = ruta.join(__dirname, "datos.json");
 //importar multer
 const multer = require ("multer");
 
+//importar validaciones
+const { validarNombre, validarCorreo, validarId } = require("./validaciones/validaciones");
+
 //almacenamiento
 const almacen = multer.diskStorage({
   destination: (req,file,cb)=>{
@@ -39,7 +42,18 @@ app.get('/api/aprendices', (req, res) => {
 });
 
 app.post('/api/aprendices', subir.single("imagen") ,(req, res) => {
-  const datosAprendiz = req.body  
+  const datosAprendiz = req.body
+
+  const resultadoNombre = validarNombre(datosAprendiz.nombre)
+  if (!resultadoNombre.valido) {
+    return res.status(400).json({ Error: resultadoNombre.mensaje })
+  }
+
+  const resultadoCorreo = validarCorreo(datosAprendiz.correo)
+  if (!resultadoCorreo.valido) {
+    return res.status(400).json({ Error: resultadoCorreo.mensaje })
+  }
+
   datosAprendiz.imagen = req.file? `/misimagenes/${req.file.fieldname}` : "sin_imagen"
   sistemaArchivo.readFile(rutaMiArchivo, "utf-8", (error, datos)=>{
     if(error) res.status(500).json({Error: "No se puede leer el archivo"})
@@ -59,6 +73,8 @@ res.status(200).json({mensaje: "Actualizar aprendiz "})
 app.delete('/api/aprendices', (req, res) => {
 res.status(200).json({mensaje: "Eliminado "})
 });
+
+
 
 app.listen(port, () => {
  console.log( `Servidor en funcionamiento en el puerto: http://localhost:${port}`);
