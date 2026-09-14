@@ -3,9 +3,8 @@
 // id: 
 
 /**
- * Valida que el nombre tenga al menos 3 letras.
- * - No permite vacío ni solo espacios.
- * - Solo acepta letras (incluye tildes y ñ) y espacios.
+ * Valida que el nombre tenga al menos 3 letras
+ * - Solo acepta letras (incluye tildes y ñ) y espacios
  */
 function validarNombre(nombre) {
   if (typeof nombre !== "string") {
