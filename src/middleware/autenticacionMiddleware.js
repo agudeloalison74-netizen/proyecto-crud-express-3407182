@@ -1,7 +1,7 @@
 const jwtoken = require("jsonwebtoken")
 const autenticacion = (req, res, next) => {
     const token = req.header("campoAutenticar")?.split(" ")[1]
-    if(token){
+    if(!token){
         return res.status(401).json({mensaje: "Acseso negado, no provee token"})
     }
     //verificar token

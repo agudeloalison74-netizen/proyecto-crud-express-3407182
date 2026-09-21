@@ -1,18 +1,22 @@
+require("dotenv").config();
 const { error } = require('console');
 const express = require('express');
 const app = express();
 
 const port = process.env.MIPUERTO || 3003; 
-//importar mis middleware
-const registroMiddleware = require("./middleware/registroMiddleware")
-const manejadorErrores = require("./middleware/manejadorErroresMiddleware")
+const jwtoken = require("jsonwebtoken");
 
+//importar mis middleware
+const registroMiddleware = require("./src/middleware/registroMiddleware");
+const manejadorErrores = require("./src/middleware/manejadorErroresMiddleware");
+const autenticacionMiddleware = require("./src/middleware/autenticacionMiddleware");
 
 // CORREGIDO: Se cambia 'extends' por 'extended' y se coloca junto al middleware json
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 //usar nuestros middleware
 app.use(registroMiddleware)
+
 
 // Librerías fs, path
 const sistemaArchivo = require("fs");
@@ -23,7 +27,7 @@ const rutaMiArchivo = ruta.join(__dirname, "datos.json");
 const multer = require("multer");
 
 // Importar validaciones
-const { validarNombre, validarCorreo, validarId } = require("./validaciones/validaciones");
+const { validarNombre, validarCorreo, validarId } = require("./src/validaciones/validaciones");
 
 // Almacenamiento
 const almacen = multer.diskStorage({
@@ -131,6 +135,32 @@ app.delete('/api/aprendices', (req, res) => {
 app.get("/api/error", (req, res, next)=>{
   next(new Error("Este es un error provocado"))
 })
+
+//ruta protegida, para acceder con token, permisos de usuario
+app.get("/api/rutaprotegida", autenticacionMiddleware, (req, res) => {
+  res.json({mensaje: "Ruta Protegida, acceso con token"});
+});
+
+//endpoint o ruta de inicio de sesion para generar un token
+app.post("/api/iniciarSesion", async (req, res) => {
+  //capturar datos de usuario
+    const { usuario, clave } = req.body;
+    //simular datos de usuario en la base de datos
+    const bdUsuario = {"usuario": "Alison", "clave":"1234"}
+    //validar datos
+    if (usuario !==bdUsuario.usuario || clave !== bdUsuario.clave)
+    {
+      res.json({mensaje:"Usuario y/o clave incorrecta!!"});
+    }
+    //verificacion y generacion del token
+    const token = jwtoken.sign(
+      {"user": req.usuario},
+      process.env.JWT_SECRETO,
+      {expiresIn:"1h"}
+    )
+    res.json({ token });
+});
+
 app.use(manejadorErrores)
 
 app.listen(port, () => {
